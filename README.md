@@ -108,7 +108,7 @@ Saat pertama kali dijalankan, database akan di-reset dan diisi data dummy:
 
 | Role  | Username | Password |
 | :--- | :--- | :--- |
-| **Admin** | `admin` | `password123$` |
+| **Admin** | `admin` | `admin123$` |
 | **User** | `user1` | `password123$` |
 
 ---
