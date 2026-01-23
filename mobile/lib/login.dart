@@ -36,10 +36,19 @@ class LoginController extends GetxController {
         final data = jsonDecode(response.body);
         GlobalAuth.token = data['token'];
 
-        // Decode token to get role (simplified: assuming role is in response or just check payload)
-        // Since backend sends token, we should normally decode it.
-        // For now, let's assume we can proceed. The backend /login response strictly returns { message, token }.
-        // We will decode the token payload if needed, or just proceed.
+        // Decode token to get role
+        try {
+          final parts = GlobalAuth.token!.split('.');
+          if (parts.length == 3) {
+            final payloadStr = utf8.decode(
+              base64Url.decode(base64Url.normalize(parts[1])),
+            );
+            final payload = jsonDecode(payloadStr);
+            GlobalAuth.role = payload['role'];
+          }
+        } catch (e) {
+          print('Error decoding token: $e');
+        }
 
         Get.snackbar('Success', 'Login Berhasil');
         Get.off(() => DashboardPage());

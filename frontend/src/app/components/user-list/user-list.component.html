@@ -39,7 +39,7 @@
                             <th>ID</th>
                             <th>Username</th>
                             <th>Role (Hak Akses)</th>
-                            <th class="text-right">Aksi</th>
+                            <th *ngIf="authService.isAdmin" class="text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,19 +54,20 @@
                                     {{ user.hakakses }}
                                 </span>
                             </td>
-                            <td class="text-right">
+                            <td *ngIf="authService.isAdmin" class="text-right">
                                 <div class="flex justify-end gap-2">
-                                    <a *ngIf="authService.isAdmin" [routerLink]="['/users/edit', user.id_user]"
+                                    <a [routerLink]="['/users/edit', user.id_user]"
                                         class="zard-btn zard-btn-ghost text-sm"
                                         style="height: 2rem; padding: 0 0.5rem;">Edit</a>
-                                    <button *ngIf="authService.isAdmin" (click)="deleteUser(user.id_user!)"
+                                    <button (click)="deleteUser(user.id_user!)"
                                         class="zard-btn zard-btn-ghost text-destructive text-sm"
                                         style="height: 2rem; padding: 0 0.5rem;">Hapus</button>
                                 </div>
                             </td>
                         </tr>
                         <tr *ngIf="users().length === 0">
-                            <td colspan="4" class="text-center p-6 text-muted-foreground">Tidak ada data pengguna.</td>
+                            <td [attr.colspan]="authService.isAdmin ? 4 : 3"
+                                class="text-center p-6 text-muted-foreground">Tidak ada data pengguna.</td>
                         </tr>
                     </tbody>
                 </table>

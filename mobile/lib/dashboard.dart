@@ -133,19 +133,26 @@ class DashboardPage extends StatelessWidget {
                 subtitle: Text(
                   (user['nama'] ?? 'No Name') + ' (${user['hakakses']})',
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => _confirmDelete(context, user['id_user']),
-                ),
+                trailing:
+                    GlobalAuth.role == 'admin'
+                        ? IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed:
+                              () => _confirmDelete(context, user['id_user']),
+                        )
+                        : null,
               );
             },
           ),
         );
       }),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _showAddUserDialog(context),
-      ),
+      floatingActionButton:
+          GlobalAuth.role == 'admin'
+              ? FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () => _showAddUserDialog(context),
+              )
+              : null,
     );
   }
 
