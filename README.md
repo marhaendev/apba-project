@@ -43,8 +43,10 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
 ## ⚙️ Instalasi & Konfigurasi
 
 1.  **Clone & Install Dependencies**
-    Jalankan perintah ini di root folder:
+    Jalankan perintah ini di terminal:
     ```bash
+    git clone https://github.com/marhaendra/apba-project.git
+    cd apba-project
     npm install
     ```
     *Ini akan otomatis menginstall dependencies untuk root, backend, dan frontend.*
