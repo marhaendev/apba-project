@@ -23,17 +23,26 @@ export class UserListComponent implements OnInit {
     pageSize = 10;
 
     searchTerm = signal('');
+    roleFilter = signal('');
     sortColumn = signal<keyof User | ''>('');
     sortDirection = signal<'asc' | 'desc'>('asc');
 
     filteredUsers = computed(() => {
         let list = [...this.users()];
+
+        // Role Filtering
+        const role = this.roleFilter();
+        if (role) {
+            list = list.filter(u => u.hakakses === role);
+        }
+
+        // Search Filtering
         const term = this.searchTerm().toLowerCase();
         if (term) {
             list = list.filter(u =>
                 u.username.toLowerCase().includes(term) ||
                 u.nama.toLowerCase().includes(term) ||
-                u.hakakses.toLowerCase().includes(term)
+                (u.hakakses && u.hakakses.toLowerCase().includes(term))
             );
         }
         const col = this.sortColumn();

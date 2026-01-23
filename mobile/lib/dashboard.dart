@@ -11,13 +11,19 @@ class DashboardController extends GetxController {
   final String baseUrl = AppConfig.baseUrl;
 
   var searchQuery = ''.obs;
+  var selectedRole = ''.obs;
   var sortColumn = 'username'.obs;
   var isAscending = true.obs;
 
   List<dynamic> get filteredUsers {
     List<dynamic> list = List.from(users);
 
-    // Filtering
+    // Role Filtering
+    if (selectedRole.value.isNotEmpty) {
+      list = list.where((u) => u['hakakses'] == selectedRole.value).toList();
+    }
+
+    // Search Filtering
     if (searchQuery.value.isNotEmpty) {
       list =
           list.where((u) {
@@ -181,6 +187,12 @@ class DashboardPage extends StatelessWidget {
                   _sortChip('username', 'Username'),
                   SizedBox(width: 4),
                   _sortChip('hakakses', 'Role'),
+                  Spacer(),
+                  _roleChip('', 'Semua'),
+                  SizedBox(width: 4),
+                  _roleChip('admin', 'Admin'),
+                  SizedBox(width: 4),
+                  _roleChip('user', 'User'),
                 ],
               ),
             ),
@@ -267,6 +279,23 @@ class DashboardPage extends StatelessWidget {
       padding: EdgeInsets.zero,
       onPressed: () => controller.toggleSort(col),
     );
+  }
+
+  Widget _roleChip(String role, String label) {
+    return Obx(() {
+      final isSelected = controller.selectedRole.value == role;
+      return ActionChip(
+        label: Text(label),
+        labelStyle: TextStyle(
+          fontSize: 10,
+          color: isSelected ? Colors.white : Colors.black87,
+        ),
+        backgroundColor: isSelected ? Colors.orange : Colors.grey.shade100,
+        padding: EdgeInsets.zero,
+        onPressed: () => controller.selectedRole.value = role,
+        visualDensity: VisualDensity.compact,
+      );
+    });
   }
 
   void _confirmDelete(BuildContext context, int id) {
