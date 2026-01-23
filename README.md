@@ -1,6 +1,6 @@
 # APBA Project (Fullstack Assessment)
 
-Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, mencakup Backend (Node.js/Express) dan Frontend (Angular 19) dengan desain sistem custom "ZardUI".
+Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, mencakup Backend (Node.js/Express), Frontend (Angular 19), dan Aplikasi Mobile (Flutter) dengan desain sistem custom "ZardUI".
 
 ## 🚀 Fitur Utama
 
@@ -31,12 +31,20 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
 - **State Management**: Angular Signals
 - **HTTP**: `HttpClient` dengan `AuthInterceptor` & `Proxy`
 
+### Mobile
+- **Framework**: Flutter
+- **State Management**: GetX
+- **API Integration**: `http` package
+- **Configuration**: `flutter_dotenv` (Membaca file `.env` root)
+
 ---
 
 ## 📋 Prasyarat
 
 - **Node.js**: v18 atau lebih baru (Disarankan v20/v24).
 - **NPM**: Bawaan Node.js.
+- **Flutter SDK**: Versi stable terbaru (untuk aplikasi mobile).
+- **Android Studio / Xcode**: Untuk menjalankan emulator/perangkat fisik.
 
 ---
 
@@ -50,6 +58,13 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
     npm install
     ```
     *Ini akan otomatis menginstall dependencies untuk root, backend, dan frontend.*
+
+2.  **Install Dependencies Mobile**
+    Pindah ke folder mobile dan jalankan pub get:
+    ```bash
+    cd mobile
+    flutter pub get
+    ```
 
 2.  **Konfigurasi Environment Backend**
     Buat file `.env` di **root folder** aplikasi:
@@ -115,7 +130,15 @@ Saat pertama kali dijalankan, database akan di-reset dan diisi data dummy:
 │   │   ├── services/      # AuthService, UserService
 │   │   └── interceptors/  # AuthInterceptor (Auto Logout)
 │   ├── src/styles.css     # ZardUI Global Styles
-│   └── proxy.conf.json    # Config Proxy ke Backend
+│   └── proxy.conf.js      # Dynamic Proxy Config
+│
+├── mobile/                 # Flutter Mobile App
+│   ├── lib/
+│   │   ├── config.dart     # Konfigurasi API (Dotenv)
+│   │   ├── login.dart      # UI & Logika Login
+│   │   ├── dashboard.dart  # UI & Logika CRUD User
+│   │   └── main.dart       # Entry Point & Dotenv Init
+│   └── pubspec.yaml        # Flutter Dependencies
 │
 └── package.json            # Root configuration (Workspaces)
 ```
