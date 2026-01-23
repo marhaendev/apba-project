@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -17,7 +18,7 @@ if (!fs.existsSync(dbDir)) {
 }
 
 const app = express();
-const port = 3001;
+const port = process.env.BACKEND_PORT || 3001;
 
 app.use(cors());
 app.use(express.json());

@@ -2,7 +2,13 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY || 'YOUR_SECRET_KEY';
 
 const verifyToken = (req, res, next) => {
-    const token = req.cookies.token;
+    let token = req.cookies.token;
+
+    // Check Authorization Header if cookie not present
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+        token = req.headers.authorization.split(' ')[1];
+    }
+
     if (!token) return res.status(401).json({ message: 'Tidak diizinkan: Token tidak ditemukan' });
 
     jwt.verify(token, SECRET_KEY, (err, decoded) => {

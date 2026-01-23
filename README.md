@@ -50,13 +50,13 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
     *Ini akan otomatis menginstall dependencies untuk root, backend, dan frontend.*
 
 2.  **Konfigurasi Environment Backend**
-    Buat file `.env` di dalam folder `backend/`:
+    Buat file `.env` di **root folder** aplikasi:
     ```bash
-    cp backend/.env.example backend/.env 
+    cp .env.example .env 
     # Atau buat manual dengan isi:
     ```
     
-    Isi `backend/.env`:
+    Isi `.env` (di root):
     ```env
     PORT=3001
     SECRET_KEY=rahasia_negara_api_123
@@ -67,16 +67,21 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
 
 ## ▶️ Menjalankan Aplikasi
 
-Anda hanya perlu satu terminal untuk menjalankan seluruh ekosistem:
+Aplikasi sekarang menggunakan konfigurasi dinamis dari file `.env` di root.
 
-```bash
-npm run dev
-```
+### 1. Backend
+- Jalankan `npm run dev` (atau `npm run dev -w backend`).
+- Server akan berjalan di port yang ditentukan di `BACKEND_PORT` (default: 3001).
 
-Perintah ini akan:
-1.  Menjalankan **Backend** di `http://localhost:3001` (dengan Nodemon).
-2.  Menjalankan **Frontend** di `http://localhost:4200`.
-3.  Mengatur proxy otomatis agar request ke `/api` diteruskan ke backend.
+### 2. Frontend
+- Jalankan `npm start -w frontend`.
+- Frontend akan berjalan di port `FRONTEND_PORT` (default: 4200) dan otomatis melakukan proxy ke backend.
+
+### 3. Mobile
+- Konfigurasi API terpusat di `mobile/lib/config.dart`.
+- Pastikan nilainya sama dengan `MOBILE_API_URL` di `.env` (khususnya IP address jika tes di HP fisik).
+
+Perintah `npm run dev` di root tetap bisa digunakan untuk menjalankan keduanya secara bersamaan.
 
 ---
 
