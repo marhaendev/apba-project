@@ -1,0 +1,93 @@
+<div class="min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="zard-nav w-full">
+        <div class="container flex h-full items-center justify-between" style="height: 3.5rem;">
+            <div class="flex items-center gap-2 font-bold text-xl">
+                <div
+                    style="background: hsl(var(--primary)); color: white; width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                    Z</div>
+                <span>ZardUI</span>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm">
+                <span class="text-muted-foreground">Logged in as <strong>{{ authService.currentUser()?.username
+                        }}</strong></span>
+                <button (click)="logout()" class="zard-btn zard-btn-ghost">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-1 container py-6 key-content">
+        <div class="flex items-center justify-between mb-6">
+            <div>
+                <h2 class="text-2xl font-bold">Dashboard Pengguna</h2>
+                <p class="text-muted-foreground">Kelola data pengguna aplikasi.</p>
+            </div>
+            <!-- Check isAdmin usage: code has authService.isAdmin getter -->
+            <a *ngIf="authService.isAdmin" routerLink="/users/create" class="zard-btn zard-btn-primary no-underline">
+                + Tambah User
+            </a>
+        </div>
+
+        <!-- Data Table -->
+        <div class="zard-card">
+            <div style="overflow-x: auto;">
+                <table class="zard-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role (Hak Akses)</th>
+                            <th class="text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let user of users()">
+                            <td>{{ user.id_user }}</td>
+                            <td class="font-medium">{{ user.username }}</td>
+                            <td>
+                                <span class="text-sm px-2 py-1 rounded-md"
+                                    [style.background]="user.hakakses === 'admin' ? 'hsl(var(--primary))' : 'hsl(var(--secondary))'"
+                                    [style.color]="user.hakakses === 'admin' ? 'hsl(var(--primary-foreground))' : 'hsl(var(--secondary-foreground))'"
+                                    style="font-size: 0.75rem; font-weight: 600;">
+                                    {{ user.hakakses }}
+                                </span>
+                            </td>
+                            <td class="text-right">
+                                <div class="flex justify-end gap-2">
+                                    <a *ngIf="authService.isAdmin" [routerLink]="['/users/edit', user.id_user]"
+                                        class="zard-btn zard-btn-ghost text-sm"
+                                        style="height: 2rem; padding: 0 0.5rem;">Edit</a>
+                                    <button *ngIf="authService.isAdmin" (click)="deleteUser(user.id_user!)"
+                                        class="zard-btn zard-btn-ghost text-destructive text-sm"
+                                        style="height: 2rem; padding: 0 0.5rem;">Hapus</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngIf="users().length === 0">
+                            <td colspan="4" class="text-center p-6 text-muted-foreground">Tidak ada data pengguna.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex items-center justify-between py-4">
+            <div class="text-sm text-muted-foreground">
+                Halaman {{ currentPage() }} dari {{ totalPages() }}
+            </div>
+            <div class="flex gap-2">
+                <button (click)="onPageChange(currentPage() - 1)" [disabled]="currentPage() === 1"
+                    class="zard-btn zard-btn-outline">
+                    Previous
+                </button>
+                <button (click)="onPageChange(currentPage() + 1)" [disabled]="currentPage() === totalPages()"
+                    class="zard-btn zard-btn-outline">
+                    Next
+                </button>
+            </div>
+        </div>
+    </main>
+</div>

@@ -1,0 +1,39 @@
+<div class="flex items-center justify-center min-h-screen">
+    <div class="zard-card w-full p-6" style="max-width: 400px;">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-semibold">ZardUI Login</h1>
+            <p class="text-sm text-muted-foreground">Masuk untuk melanjutkan</p>
+        </div>
+
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+            <div class="flex flex-col gap-2">
+                <label for="username" class="text-sm font-medium">Username</label>
+                <input id="username" type="text" formControlName="username" class="zard-input" placeholder="admin" />
+                <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+                    class="text-destructive text-sm">
+                    Username wajib diisi
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label for="password" class="text-sm font-medium">Password</label>
+                <input id="password" type="password" formControlName="password" class="zard-input"
+                    placeholder="••••••••" />
+                <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                    class="text-destructive text-sm">
+                    Password wajib diisi
+                </div>
+            </div>
+
+            <div *ngIf="errorMessage()" class="p-4 text-sm text-destructive"
+                style="background: hsl(var(--destructive) / 0.1); border-radius: 4px; border: 1px solid hsl(var(--destructive) / 0.2);">
+                {{ errorMessage() }}
+            </div>
+
+            <button type="submit" [disabled]="loginForm.invalid || isLoading()" class="zard-btn zard-btn-primary w-full"
+                style="margin-top: 1rem;">
+                {{ isLoading() ? 'Verifikasi...' : 'Masuk' }}
+            </button>
+        </form>
+    </div>
+</div>
