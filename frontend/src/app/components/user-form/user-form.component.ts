@@ -4,6 +4,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user.service';
 
+declare const lucide: any;
+
 @Component({
     selector: 'app-user-form',
     standalone: true,
@@ -42,6 +44,10 @@ export class UserFormComponent implements OnInit {
             this.userForm.get('password')?.addValidators(Validators.required);
             this.userForm.get('password')?.updateValueAndValidity();
         }
+
+        setTimeout(() => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }, 100);
     }
 
     loadUser(id: number) {

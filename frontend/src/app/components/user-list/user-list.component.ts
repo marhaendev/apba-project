@@ -5,6 +5,8 @@ import { Router, RouterModule } from '@angular/router';
 import { User, UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
 
+declare const lucide: any;
+
 @Component({
     selector: 'app-user-list',
     standalone: true,
@@ -61,6 +63,9 @@ export class UserListComponent implements OnInit {
 
     ngOnInit() {
         this.loadUsers();
+        setTimeout(() => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }, 100);
     }
 
     loadUsers(page: number = 1) {
