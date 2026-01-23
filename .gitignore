@@ -33,6 +33,5 @@ npm-debug.log*
 Thumbs.db
 
 # Documentation
-# docs/  <-- Remove or comment out global ignore
-docs/api.md
-docs/soal.md
+# Semuanya di docs/ sekarang disertakan kembali atas permintaan
+
