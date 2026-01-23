@@ -19,31 +19,32 @@
 
     <!-- Main Content -->
     <main class="flex-1 container py-6 key-content">
-        <div class="flex items-center justify-between mb-6">
-            <div>
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+            <div class="flex-shrink-0">
                 <h2 class="text-2xl font-bold">Dashboard Pengguna</h2>
-                <p class="text-muted-foreground">Kelola data pengguna aplikasi.</p>
+                <p class="text-muted-foreground text-sm">Kelola data pengguna aplikasi.</p>
             </div>
-            <!-- Check isAdmin usage: code has authService.isAdmin getter -->
-            <a *ngIf="authService.isAdmin" routerLink="/users/create" class="zard-btn zard-btn-primary no-underline">
-                + Tambah User
-            </a>
-        </div>
 
-        <!-- Section Pencarian & Filter (Tepat di atas tabel) -->
-        <div class="flex flex-col md:flex-row items-center gap-4 mb-4 bg-muted/30 p-4 rounded-lg border">
-            <div class="relative flex-1 w-full">
-                <input type="text" [(ngModel)]="searchTerm" placeholder="Cari username atau nama..."
-                    class="zard-input w-full" style="padding-left: 2.5rem;" />
-                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">🔍</span>
-            </div>
-            <div class="flex items-center gap-2 w-full md:w-auto">
-                <label class="text-sm font-medium whitespace-nowrap">Role:</label>
-                <select [(ngModel)]="roleFilter" class="zard-input" style="width: 150px; height: 2.5rem;">
+            <div class="flex flex-col sm:flex-row items-center gap-3 flex-1 lg:max-w-2xl lg:justify-end">
+                <!-- Searching component moved here -->
+                <div class="relative w-full sm:max-w-xs">
+                    <input type="text" [(ngModel)]="searchTerm" placeholder="Cari..." class="zard-input w-full"
+                        style="padding-left: 2.2rem; height: 2.5rem;" />
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">🔍</span>
+                </div>
+
+                <!-- Filtering Component -->
+                <select [(ngModel)]="roleFilter" class="zard-input w-full sm:w-auto"
+                    style="min-width: 130px; height: 2.5rem;">
                     <option value="">Semua Role</option>
                     <option value="admin">Admin</option>
                     <option value="user">User</option>
                 </select>
+
+                <a *ngIf="authService.isAdmin" routerLink="/users/create"
+                    class="zard-btn zard-btn-primary no-underline w-full sm:w-auto text-center">
+                    + User
+                </a>
             </div>
         </div>
 

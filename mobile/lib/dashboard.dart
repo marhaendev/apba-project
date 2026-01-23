@@ -175,19 +175,17 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
           Obx(
-            () => Container(
+            () => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
               padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               child: Row(
                 children: [
-                  Text(
-                    'Urutkan:',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 8),
                   _sortChip('username', 'Username'),
                   SizedBox(width: 4),
                   _sortChip('hakakses', 'Role'),
-                  Spacer(),
+                  SizedBox(width: 12),
+                  Container(width: 1, height: 20, color: Colors.grey.shade300),
+                  SizedBox(width: 12),
                   _roleChip('', 'Semua'),
                   SizedBox(width: 4),
                   _roleChip('admin', 'Admin'),
