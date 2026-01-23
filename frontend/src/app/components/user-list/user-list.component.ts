@@ -1,5 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { User, UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
@@ -7,19 +8,45 @@ import { AuthService } from '../../services/auth.service';
 @Component({
     selector: 'app-user-list',
     standalone: true,
-    imports: [CommonModule, RouterModule],
+    imports: [CommonModule, RouterModule, FormsModule],
     templateUrl: './user-list.component.html',
-    styleUrl: './user-list.component.css' // Assuming default empty css or I can ignore
+    styleUrl: './user-list.component.css'
 })
 export class UserListComponent implements OnInit {
     private userService = inject(UserService);
-    public authService = inject(AuthService); // Public for template access
+    public authService = inject(AuthService);
 
     users = signal<User[]>([]);
     total = signal(0);
     currentPage = signal(1);
     totalPages = signal(1);
     pageSize = 10;
+
+    searchTerm = signal('');
+    sortColumn = signal<keyof User | ''>('');
+    sortDirection = signal<'asc' | 'desc'>('asc');
+
+    filteredUsers = computed(() => {
+        let list = [...this.users()];
+        const term = this.searchTerm().toLowerCase();
+        if (term) {
+            list = list.filter(u =>
+                u.username.toLowerCase().includes(term) ||
+                u.nama.toLowerCase().includes(term) ||
+                u.hakakses.toLowerCase().includes(term)
+            );
+        }
+        const col = this.sortColumn();
+        if (col) {
+            const dir = this.sortDirection() === 'asc' ? 1 : -1;
+            list.sort((a, b) => {
+                const valA = (a[col] ?? '').toString().toLowerCase();
+                const valB = (b[col] ?? '').toString().toLowerCase();
+                return valA < valB ? -1 * dir : (valA > valB ? 1 * dir : 0);
+            });
+        }
+        return list;
+    });
 
     errorMsg = signal('');
 
@@ -44,7 +71,7 @@ export class UserListComponent implements OnInit {
 
         this.userService.deleteUser(id).subscribe({
             next: () => {
-                this.loadUsers(this.currentPage()); // Reload current page
+                this.loadUsers(this.currentPage());
             },
             error: (err) => {
                 alert(err.error?.message || 'Delete failed');
@@ -55,6 +82,15 @@ export class UserListComponent implements OnInit {
     onPageChange(page: number) {
         if (page >= 1 && page <= this.totalPages()) {
             this.loadUsers(page);
+        }
+    }
+
+    toggleSort(col: keyof User) {
+        if (this.sortColumn() === col) {
+            this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
+        } else {
+            this.sortColumn.set(col);
+            this.sortDirection.set('asc');
         }
     }
 

@@ -10,10 +10,47 @@ class DashboardController extends GetxController {
   var isLoading = false.obs;
   final String baseUrl = AppConfig.baseUrl;
 
+  var searchQuery = ''.obs;
+  var sortColumn = 'username'.obs;
+  var isAscending = true.obs;
+
+  List<dynamic> get filteredUsers {
+    List<dynamic> list = List.from(users);
+
+    // Filtering
+    if (searchQuery.value.isNotEmpty) {
+      list =
+          list.where((u) {
+            final query = searchQuery.value.toLowerCase();
+            return u['username'].toString().toLowerCase().contains(query) ||
+                (u['nama'] ?? '').toString().toLowerCase().contains(query);
+          }).toList();
+    }
+
+    // Sorting
+    list.sort((a, b) {
+      final valA = (a[sortColumn.value] ?? '').toString().toLowerCase();
+      final valB = (b[sortColumn.value] ?? '').toString().toLowerCase();
+      int res = valA.compareTo(valB);
+      return isAscending.value ? res : -res;
+    });
+
+    return list;
+  }
+
   @override
   void onInit() {
     super.onInit();
     fetchUsers();
+  }
+
+  void toggleSort(String col) {
+    if (sortColumn.value == col) {
+      isAscending.toggle();
+    } else {
+      sortColumn.value = col;
+      isAscending.value = true;
+    }
   }
 
   Map<String, String> get _headers => {
@@ -115,37 +152,92 @@ class DashboardPage extends StatelessWidget {
           IconButton(icon: Icon(Icons.logout), onPressed: controller.logout),
         ],
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
-        }
-        return RefreshIndicator(
-          onRefresh: () => controller.fetchUsers(isBackground: true),
-          child: ListView.builder(
-            itemCount: controller.users.length,
-            itemBuilder: (context, index) {
-              final user = controller.users[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  child: Text(user['username'][0].toString().toUpperCase()),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) => controller.searchQuery.value = value,
+              decoration: InputDecoration(
+                hintText: 'Cari user...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                title: Text(user['username']),
-                subtitle: Text(
-                  (user['nama'] ?? 'No Name') + ' (${user['hakakses']})',
-                ),
-                trailing:
-                    GlobalAuth.role == 'admin'
-                        ? IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed:
-                              () => _confirmDelete(context, user['id_user']),
-                        )
-                        : null,
-              );
-            },
+                contentPadding: EdgeInsets.symmetric(vertical: 0),
+              ),
+            ),
           ),
-        );
-      }),
+          Obx(
+            () => Container(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                children: [
+                  Text(
+                    'Urutkan:',
+                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(width: 8),
+                  _sortChip('username', 'Username'),
+                  SizedBox(width: 4),
+                  _sortChip('hakakses', 'Role'),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: Obx(() {
+              if (controller.isLoading.value) {
+                return Center(child: CircularProgressIndicator());
+              }
+              final displayUsers = controller.filteredUsers;
+              return RefreshIndicator(
+                onRefresh: () => controller.fetchUsers(isBackground: true),
+                child:
+                    displayUsers.isEmpty
+                        ? Center(child: Text("Tidak ada data pengguna"))
+                        : ListView.builder(
+                          itemCount: displayUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = displayUsers[index];
+                            return ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.blue.shade100,
+                                child: Text(
+                                  '${index + 1}',
+                                  style: TextStyle(
+                                    color: Colors.blue.shade900,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              title: Text(user['username']),
+                              subtitle: Text(
+                                (user['nama'] ?? 'No Name') +
+                                    ' (${user['hakakses']})',
+                              ),
+                              trailing:
+                                  GlobalAuth.role == 'admin'
+                                      ? IconButton(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed:
+                                            () => _confirmDelete(
+                                              context,
+                                              user['id_user'],
+                                            ),
+                                      )
+                                      : null,
+                            );
+                          },
+                        ),
+              );
+            }),
+          ),
+        ],
+      ),
       floatingActionButton:
           GlobalAuth.role == 'admin'
               ? FloatingActionButton(
@@ -153,6 +245,27 @@ class DashboardPage extends StatelessWidget {
                 onPressed: () => _showAddUserDialog(context),
               )
               : null,
+    );
+  }
+
+  Widget _sortChip(String col, String label) {
+    return ActionChip(
+      label: Text(
+        label +
+            (controller.sortColumn.value == col
+                ? (controller.isAscending.value ? ' ↑' : ' ↓')
+                : ''),
+      ),
+      labelStyle: TextStyle(
+        fontSize: 11,
+        color: controller.sortColumn.value == col ? Colors.white : Colors.black,
+      ),
+      backgroundColor:
+          controller.sortColumn.value == col
+              ? Colors.blue
+              : Colors.grey.shade200,
+      padding: EdgeInsets.zero,
+      onPressed: () => controller.toggleSort(col),
     );
   }
 

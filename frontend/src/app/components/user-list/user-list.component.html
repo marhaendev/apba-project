@@ -24,10 +24,18 @@
                 <h2 class="text-2xl font-bold">Dashboard Pengguna</h2>
                 <p class="text-muted-foreground">Kelola data pengguna aplikasi.</p>
             </div>
-            <!-- Check isAdmin usage: code has authService.isAdmin getter -->
-            <a *ngIf="authService.isAdmin" routerLink="/users/create" class="zard-btn zard-btn-primary no-underline">
-                + Tambah User
-            </a>
+            <div class="flex items-center gap-4">
+                <div class="relative">
+                    <input type="text" [(ngModel)]="searchTerm" placeholder="Cari user..." class="zard-input"
+                        style="width: 250px; padding-left: 2.5rem;" />
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">🔍</span>
+                </div>
+                <!-- Check isAdmin usage: code has authService.isAdmin getter -->
+                <a *ngIf="authService.isAdmin" routerLink="/users/create"
+                    class="zard-btn zard-btn-primary no-underline">
+                    + Tambah User
+                </a>
+            </div>
         </div>
 
         <!-- Data Table -->
@@ -36,16 +44,31 @@
                 <table class="zard-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Role (Hak Akses)</th>
+                            <th style="width: 50px;">No</th>
+                            <th (click)="toggleSort('username')"
+                                class="cursor-pointer hover:bg-muted/50 transition-colors">
+                                Username
+                                <span *ngIf="sortColumn() === 'username'">{{ sortDirection() === 'asc' ? '↑' : '↓'
+                                    }}</span>
+                            </th>
+                            <th (click)="toggleSort('nama')" class="cursor-pointer hover:bg-muted/50 transition-colors">
+                                Nama Lengkap
+                                <span *ngIf="sortColumn() === 'nama'">{{ sortDirection() === 'asc' ? '↑' : '↓' }}</span>
+                            </th>
+                            <th (click)="toggleSort('hakakses')"
+                                class="cursor-pointer hover:bg-muted/50 transition-colors">
+                                Role (Hak Akses)
+                                <span *ngIf="sortColumn() === 'hakakses'">{{ sortDirection() === 'asc' ? '↑' : '↓'
+                                    }}</span>
+                            </th>
                             <th *ngIf="authService.isAdmin" class="text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let user of users()">
-                            <td>{{ user.id_user }}</td>
+                        <tr *ngFor="let user of filteredUsers(); let i = index">
+                            <td>{{ (currentPage() - 1) * pageSize + i + 1 }}</td>
                             <td class="font-medium">{{ user.username }}</td>
+                            <td>{{ user.nama }}</td>
                             <td>
                                 <span class="text-sm px-2 py-1 rounded-md"
                                     [style.background]="user.hakakses === 'admin' ? 'hsl(var(--primary))' : 'hsl(var(--secondary))'"
@@ -65,8 +88,8 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr *ngIf="users().length === 0">
-                            <td [attr.colspan]="authService.isAdmin ? 4 : 3"
+                        <tr *ngIf="filteredUsers().length === 0">
+                            <td [attr.colspan]="authService.isAdmin ? 5 : 4"
                                 class="text-center p-6 text-muted-foreground">Tidak ada data pengguna.</td>
                         </tr>
                     </tbody>
