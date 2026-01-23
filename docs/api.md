@@ -1,22 +1,23 @@
-# API Testing Scenarios
+# Skenario Pengujian API
 
 Base URL: `http://localhost:3001/api`
-**Important**:
-1.  **Cookies**: You must use `-c cookies.txt` to SAVE cookies on login, and `-b cookies.txt` to SEND cookies on protected requests.
-2.  **PowerShell**: Use `curl.exe` instead of `curl`.
+
+**Penting**:
+1.  **Cookies**: Gunakan `-c cookies.txt` untuk **MENYIMPAN** cookie saat login, dan `-b cookies.txt` untuk **MENGIRIM** cookie pada request yang memerlukan autentikasi.
+2.  **PowerShell**: Gunakan `curl.exe` alih-alih `curl` (karena `curl` di PowerShell adalah alias untuk `Invoke-WebRequest`).
 
 ---
 
-## 1. Setup (Login Scenarios)
+## 1. Setup (Skenario Login)
 
-### A. Login as Admin
-*Saves token to `admin_cookies.txt`*
+### A. Login sebagai Admin
+*Menyimpan token ke `admin_cookies.txt`*
 ```bash
 curl -X POST http://localhost:3001/api/login -H "Content-Type: application/json" -d "{\"username\": \"admin\", \"password\": \"admin123$\"}" -c admin_cookies.txt
 ```
 
-### B. Login as User (Hasan)
-*Saves token to `user_cookies.txt`*
+### B. Login sebagai User (Hasan)
+*Menyimpan token ke `user_cookies.txt`*
 ```bash
 curl -X POST http://localhost:3001/api/login -H "Content-Type: application/json" -d "{\"username\": \"hasan\", \"password\": \"hasan123$\"}" -c user_cookies.txt
 ```
@@ -28,76 +29,76 @@ curl -X POST http://localhost:3001/api/logout -b admin_cookies.txt
 
 ---
 
-## 2. Protected Routes (Admin Only)
+## 2. Route Terlindungi (Khusus Admin)
 
-**Goal**: Verify that Admin can Create, Update, Delete.
+**Tujuan**: Memverifikasi bahwa Admin dapat melakukan Create, Update, dan Delete.
 
-### Create User (As Admin) -> SUCCESS
+### Membuat User (Sebagai Admin) -> BERHASIL
 ```bash
 curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"username\": \"testadmin\", \"password\": \"pass\", \"nama\": \"Test Admin\", \"hakakses\": \"user\"}" -b admin_cookies.txt
 ```
 
-### Update User (As Admin) -> SUCCESS
+### Memperbarui User (Sebagai Admin) -> BERHASIL
 *(Target ID 2 = Hasan)*
 ```bash
-curl -X PUT http://localhost:3001/api/users/2 -H "Content-Type: application/json" -d "{\"nama\": \"Hasan Updated\"}" -b admin_cookies.txt
+curl -X PUT http://localhost:3001/api/users/2 -H "Content-Type: application/json" -d "{\"nama\": \"Hasan Terupdate\"}" -b admin_cookies.txt
 ```
 
-### Delete User (As Admin) -> SUCCESS
-*(Target ID: check your DB first, e.g., newly created one)*
+### Menghapus User (Sebagai Admin) -> BERHASIL
+*(Gunakan ID yang ada di DB Anda, contoh: ID user baru yang dibuat)*
 ```bash
 curl -X DELETE http://localhost:3001/api/users/8 -b admin_cookies.txt
 ```
 
 ---
 
-## 3. Protected Routes (User / Non-Admin)
+## 3. Route Terlindungi (User / Non-Admin)
 
-**Goal**: Verify that Normal User receives **403 Forbidden**.
+**Tujuan**: Memverifikasi bahwa User Biasa mendapatkan error **403 Forbidden**.
 
-### Create User (As Hasan) -> FAIL (403)
+### Membuat User (Sebagai Hasan) -> GAGAL (403)
 ```bash
-curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"username\": \"failprop\", \"password\": \"pass\", \"nama\": \"Fail\", \"hakakses\": \"user\"}" -b user_cookies.txt
+curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"username\": \"failprop\", \"password\": \"pass\", \"nama\": \"Gagal\", \"hakakses\": \"user\"}" -b user_cookies.txt
 ```
 
-### Delete User (As Hasan) -> FAIL (403)
+### Menghapus User (Sebagai Hasan) -> GAGAL (403)
 ```bash
 curl -X DELETE http://localhost:3001/api/users/1 -b user_cookies.txt
 ```
 
 ---
 
-## 4. Protected Routes (Public / Guest)
+## 4. Route Terlindungi (Publik / Guest)
 
-**Goal**: Verify that Guest receives **401 Unauthorized**.
+**Tujuan**: Memverifikasi bahwa Guest (tanpa cookie) mendapatkan error **401 Unauthorized**.
 
-### Create User (No Cookie) -> FAIL (401)
+### Membuat User (Tanpa Cookie) -> GAGAL (401)
 ```bash
-curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"username\": \"ghost\", \"password\": \"pass\", \"nama\": \"Ghost\", \"hakakses\": \"user\"}"
+curl -X POST http://localhost:3001/api/users -H "Content-Type: application/json" -d "{\"username\": \"ghost\", \"password\": \"pass\", \"nama\": \"Hantu\", \"hakakses\": \"user\"}"
 ```
 
 ---
 
-## 5. Public Routes
+## 5. Route Publik
 
-**Goal**: Accessible by anyone.
+**Tujuan**: Dapat diakses oleh siapa saja tanpa login.
 
-### List Users
+### Mengambil Daftar User
 ```bash
 curl -X GET http://localhost:3001/api/users
 ```
 
-### Logic: Array
+### Tes Logika: Array (Transformasi Data)
 ```bash
 curl -X GET http://localhost:3001/api/logic/array
 ```
 
-### Logic: String
+### Tes Logika: String (Manipulasi Teks)
 ```bash
 curl -X GET "http://localhost:3001/api/logic/string?input=PT.AbadI*perKASa@BeRsAmA-DIGItAL%23SolUTiONs"
 ```
 
-### Logic: Terbilang
+### Tes Logika: Terbilang (Konversi Angka ke Kata)
 ```bash
 curl -X GET "http://localhost:3001/api/logic/terbilang?nominal=50000"
 ```
