@@ -53,7 +53,7 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
 1.  **Clone & Install Dependencies**
     Jalankan perintah ini di terminal:
     ```bash
-    git clone https://github.com/marhaendra/apba-project.git
+    git clone https://github.com/marhaendev/apba-project.git
     cd apba-project
     npm install
     ```
