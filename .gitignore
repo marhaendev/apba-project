@@ -15,8 +15,8 @@ out/
 .cache/
 
 # Database
-*.sqlite
-backend/database.sqlite
+# *.sqlite
+# backend/database.sqlite
 
 # Logs
 *.log

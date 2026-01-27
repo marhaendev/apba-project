@@ -4,114 +4,114 @@ Aplikasi Fullstack modern yang dibangun untuk memenuhi persyaratan tes teknis, m
 
 ## 🚀 Fitur Utama
 
-- **Monorepo Structure**: Mengelola backend dan frontend dalam satu repositori dengan npm workspaces.
-- **Concurrent Execution**: Menjalankan kedua sisi aplikasi hanya dengan satu perintah.
-- **Advanced Authentication**:
-  - JWT disimpan aman dalam **HttpOnly Cookie**.
-  - Dukungan **Enkripsi AES-256-CBC** untuk payload login.
-  - **Auto-Logout** saat token kadaluarsa (Interceptor).
-  - Role-based Access Control (Admin vs User).
-- **ZardUI Design System**: Desain antarmuka custom yang bersih, modern, dan responsif (tanpa dependensi UI library berat).
-- **Logic Tests**: Endpoint khusus untuk transformasi Array, String, dan Terbilang.
+*   **Monorepo Structure**: Mengelola backend dan frontend dalam satu repositori dengan npm workspaces.
+*   **Concurrent Execution**: Menjalankan kedua sisi aplikasi hanya dengan satu perintah.
+*   **Advanced Authentication**:
+    *   JWT disimpan aman dalam **HttpOnly Cookie**.
+    *   Dukungan **Enkripsi AES-256-CBC** untuk payload login.
+    *   **Auto-Logout** saat token kadaluarsa (Interceptor).
+    *   Role-based Access Control (Admin vs User).
+*   **ZardUI Design System**: Desain antarmuka custom yang bersih, modern, dan responsif (tanpa dependensi UI library berat).
+*   **Logic Tests**: Endpoint khusus untuk transformasi Array, String, dan Terbilang.
 
----
+* * *
 
 ## 🛠 Teknologi
 
 ### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **Database**: SQLite3 (dengan Sequelize ORM)
-- **Security**: `jsonwebtoken` (JWT), `crypto` (AES Encryption)
-- **Validasi**: Custom validation logic
+
+*   **Runtime**: Node.js
+*   **Framework**: Express.js
+*   **Database**: SQLite3 (dengan Sequelize ORM)
+*   **Security**: `jsonwebtoken` (JWT), `crypto` (AES Encryption)
+*   **Validasi**: Custom validation logic
 
 ### Frontend
-- **Framework**: Angular 19 (Latest)
-- **Styling**: Vanilla CSS dengan variabel CSS modern (ZardUI Design System - Tailwind-like utility classes)
-- **State Management**: Angular Signals
-- **HTTP**: `HttpClient` dengan `AuthInterceptor` & `Proxy`
+
+*   **Framework**: Angular 19 (Latest)
+*   **Styling**: Vanilla CSS dengan variabel CSS modern (ZardUI Design System - Tailwind-like utility classes)
+*   **State Management**: Angular Signals
+*   **HTTP**: `HttpClient` dengan `AuthInterceptor` & `Proxy`
 
 ### Mobile
-- **Framework**: Flutter
-- **State Management**: GetX
-- **API Integration**: `http` package
-- **Configuration**: `flutter_dotenv` (Membaca file `.env` root)
 
----
+*   **Framework**: Flutter
+*   **State Management**: GetX
+*   **API Integration**: `http` package
+*   **Configuration**: `flutter_dotenv` (Membaca file `.env` root)
+
+* * *
 
 ## 📋 Prasyarat
 
-- **Node.js**: v18 atau lebih baru (Disarankan v20/v24).
-- **NPM**: Bawaan Node.js.
-- **Flutter SDK**: Versi stable terbaru (untuk aplikasi mobile).
-- **Android Studio / Xcode**: Untuk menjalankan emulator/perangkat fisik.
+*   **Node.js**: v18 atau lebih baru (Disarankan v20/v24).
+*   **NPM**: Bawaan Node.js.
+*   **Flutter SDK**: Versi stable terbaru (untuk aplikasi mobile).
+*   **Android Studio / Xcode**: Untuk menjalankan emulator/perangkat fisik.
 
----
+* * *
 
 ## ⚙️ Instalasi & Konfigurasi
 
-1.  **Clone & Install Dependencies**
-    Jalankan perintah ini di terminal:
-    ```bash
-    git clone https://github.com/marhaendev/apba-project.git
-    cd apba-project
-    npm install
-    ```
-    *Ini akan otomatis menginstall dependencies untuk root, backend, dan frontend.*
+1. **Clone Repositori**:
+```bash
+git clone https://github.com/marhaendev/apba-project.git
+cd apba-project
+```
 
-2.  **Install Dependencies Mobile**
-    Pindah ke folder mobile dan jalankan pub get:
-    ```bash
-    cd mobile
-    flutter pub get
-    ```
+2. **Install Dependensi**:
+Cukup jalankan satu perintah untuk menginstall seluruh dependensi (Root, Backend, Frontend):
 
-2.  **Konfigurasi Environment Backend**
-    Buat file `.env` di **root folder** aplikasi:
-    ```bash
-    cp .env.example .env 
-    # Atau buat manual dengan isi:
-    ```
-    
-    Isi `.env` (di root):
-    ```env
-    PORT=3001
-    SECRET_KEY=rahasia_negara_api_123
-    JWT_EXPIRY_SECONDS=86400  # 1 Hari
-    ```
+```bash
+npm install
+```
+
+### 🌍 Konfigurasi Environment
+Buat file `.env` di **root folder** (atau copy dari `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+Pastikan variabel berikut sesuai:
+- `BACKEND_PORT`: 3001
+- `FRONTEND_PORT`: 4200
+- `MOBILE_API_URL`: URL API untuk Flutter (Gunakan IP Lokal jika tes di peranti fisik)
 
 ---
 
 ## ▶️ Menjalankan Aplikasi
 
-Aplikasi sekarang menggunakan konfigurasi dinamis dari file `.env` di root.
+Anda dapat menjalankan backend dan frontend secara bersamaan dengan satu perintah dari root folder:
 
-### 1. Backend
-- Jalankan `npm run dev` (atau `npm run dev -w backend`).
-- Server akan berjalan di port yang ditentukan di `BACKEND_PORT` (default: 3001).
+### 💻 Web (Backend & Frontend)
+```bash
+npm run dev
+```
+- **Backend**: `http://localhost:3001`
+- **Frontend**: `http://localhost:4200` (Sudah terkonfigurasi Auto-Proxy ke backend)
 
-### 2. Frontend
-- Jalankan `npm start -w frontend`.
-- Frontend akan berjalan di port `FRONTEND_PORT` (default: 4200) dan otomatis melakukan proxy ke backend.
+### 📱 Mobile (Flutter)
+Jalankan perintah berikut di folder `mobile`:
+```bash
+cd mobile
+flutter pub get
+flutter run
+```
 
-### 3. Mobile
-- Konfigurasi API terpusat di `mobile/lib/config.dart`.
-- Pastikan nilainya sama dengan `MOBILE_API_URL` di `.env` (khususnya IP address jika tes di HP fisik).
 
-Perintah `npm run dev` di root tetap bisa digunakan untuk menjalankan keduanya secara bersamaan.
-
----
+* * *
 
 ## 🔐 Akun Demo (Seeding)
 
 Saat pertama kali dijalankan, database akan di-reset dan diisi data dummy:
 
-| Role  | Username | Password |
-| :--- | :--- | :--- |
+| Role | Username | Password |
+| :-- | :-- | :-- |
 | **Admin** | `admin` | `admin123$` |
 | **User** | `user1` | `password123$` |
 
----
+* * *
 
 ## 📂 Struktur Proyek
 
@@ -145,5 +145,4 @@ Saat pertama kali dijalankan, database akan di-reset dan diisi data dummy:
 
 ## 🧪 Dokumentasi API & Testing
 
-Untuk dokumentasi lengkap endpoint API dan cara testing menggunakan cURL, silakan lihat file:
-👉 **[docs/api.md](./docs/api.md)**
+Untuk dokumentasi lengkap endpoint API dan cara testing menggunakan cURL, silakan lihat file: 👉 **[docs/api.md](./docs/api.md)**

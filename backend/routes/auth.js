@@ -11,16 +11,19 @@ const SECRET_KEY = process.env.SECRET_KEY || 'YOUR_SECRET_KEY';
 router.post('/login', async (req, res) => {
     try {
         const { encryptedData } = req.body;
-
         let username, password;
 
-        if (encryptedData) {
+        if (typeof encryptedData === 'string' && encryptedData.length > 0) {
             try {
                 const bytes = CryptoJS.AES.decrypt(encryptedData, 'SecretPassphrase');
-                const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+                const decryptedStr = bytes.toString(CryptoJS.enc.Utf8);
+                if (!decryptedStr) throw new Error('Data tidak dapat didekripsi atau format salah');
+
+                const decryptedData = JSON.parse(decryptedStr);
                 username = decryptedData.username;
                 password = decryptedData.password;
             } catch (e) {
+                console.error('Decryption error:', e.message);
                 return res.status(400).json({ message: 'Dekripsi gagal', error: e.message });
             }
         } else {
